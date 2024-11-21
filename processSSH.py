@@ -61,7 +61,7 @@ def MonitorSSHLogs():
                                 ip_failed_count.pop(ip)
                                 time.sleep(5)
                             else:
-                                ip_failed_count[ip] = [1, timestamp]  # Reset the failed count and timestamp
+                                ip_failed_count[ip] = [1, timestamp]  
                         else:
                             failed_count = ip_failed_count[ip][0]
                             ip_failed_count[ip] = [failed_count + 1, timestamp]

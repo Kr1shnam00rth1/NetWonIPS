@@ -1,3 +1,6 @@
+"""
+    Module to Detect SSH Brute Force Attack
+"""
 import datetime
 import doActions
 import makeLogs
@@ -22,7 +25,6 @@ def CheckTimeDifference(start_time, current_time):
     return 1 if difference_time < threshold_time else 0
 
 def MonitorSSHLogs():
-
     """Function to monitor the SSH logs to detect failed login attempts and block IPs exceeding the threshold count within the threshold time."""
     
     file = open("/var/log/auth.log")
@@ -46,27 +48,25 @@ def MonitorSSHLogs():
                     if time_match:
                         timestamp = time_match.group(1)
 
-                    if ip not in ip_failed_count:
-                        ip_failed_count[ip] = [1, timestamp]
-                    else:
-                        temporary = ip_failed_count[ip]
-                        if temporary[0] >= threshold_count:
-                            current_time = datetime.datetime.now().strftime('%H:%M:%S')
-                            start_time = temporary[1]
-                            result = CheckTimeDifference(start_time, current_time)
-
-                            if result == 1:
-                                doActions.BlockIP(ip)
-                                makeLogs.Attacklogs(f'SSH Bruteforce IP {ip} Blocked', None)
-                                ip_failed_count.pop(ip)
-                                time.sleep(5)
-                            else:
-                                ip_failed_count[ip] = [1, timestamp]  
+                        if ip not in ip_failed_count:
+                            ip_failed_count[ip] = [1, timestamp]
                         else:
-                            failed_count = ip_failed_count[ip][0]
-                            ip_failed_count[ip] = [failed_count + 1, timestamp]
+                            temporary = ip_failed_count[ip]
+                            if temporary[0] >= threshold_count:
+                                current_time = datetime.datetime.now().strftime('%H:%M:%S')
+                                start_time = temporary[1]
+                                result = CheckTimeDifference(start_time, current_time)
 
-        time.sleep(1) 
+                                if result == 1:
+                                    doActions.BlockIP(ip)
+                                    makeLogs.Attacklogs(f'SSH Bruteforce IP {ip} Blocked', None)
+                                    ip_failed_count.pop(ip)
+                                    
+                                else:
+                                    ip_failed_count[ip] = [1, timestamp]  
+                            else:
+                                failed_count = ip_failed_count[ip][0]
+                                ip_failed_count[ip] = [failed_count + 1, timestamp]
+        time.sleep(1)
 
     file.close()
-

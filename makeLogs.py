@@ -30,3 +30,6 @@ def Attacklogs(message, sid):
     
     finally:
         file.close()
+
+def Trafficlogs():
+    pass

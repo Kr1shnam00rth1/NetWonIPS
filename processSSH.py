@@ -2,14 +2,15 @@ import datetime
 import doActions
 import makeLogs
 import time
+import re
 
 ip_failed_count = {}
-threshold_time = 5 * 60
+threshold_time = 5 * 60  
 threshold_count = 5
 
 def CheckTimeDifference(start_time, current_time):
 
-    """Function to Check if the time difference between the first packet and the current packet is within the threshold."""
+    """Function to check if the time difference between the first packet and the current packet is within the threshold."""
     
     start_time = datetime.datetime.strptime(start_time, '%H:%M:%S')
     current_time = datetime.datetime.strptime(current_time, '%H:%M:%S')
@@ -22,34 +23,49 @@ def CheckTimeDifference(start_time, current_time):
 
 def MonitorSSHLogs():
 
-    """Function to Monitor the SSH logs to detect failed login attempts, and block IPs exceeding the threshold count within the threshold time."""
+    """Function to monitor the SSH logs to detect failed login attempts and block IPs exceeding the threshold count within the threshold time."""
     
     file = open("/var/log/auth.log")
-    file.seek(0,2)
+    file.seek(0, 2)
+    failed_login_pattern = re.compile(r'Failed password for .+ from (\d+\.\d+\.\d+\.\d+)')
+    timestamp_regex = r"^\w{3}\s\d{2}\s(\d{2}:\d{2}:\d{2})"
+    
     while True:
-        for line in file.readlines():
-            line = line.strip().split(" ")
-            if 'Failed' in line and len(line) == 14:
-                ip = line[10]
-                timestamp = line[2]
-                if ip not in ip_failed_count:
-                    ip_failed_count[ip] = [1, timestamp]
-                else:
-                    temporary = ip_failed_count[ip]
-                    if temporary[0] > threshold_count:
-                        current_time = datetime.datetime.now().strftime('%H:%M:%S')
-                        start_time = temporary[1]
-                        result = CheckTimeDifference(start_time, current_time)
+        line = file.readline()
+        if line:
+            line = line.strip()
 
-                        if result == 1:
-                            doActions.BlockIP(ip)
-                            makeLogs.Attacklogs(f'SSH Bruteforce IP {ip} Blocked',None)
-                            ip_failed_count.pop(ip)
-                            ip=None
-                        else:
-                            ip_failed_count[ip] = [1, timestamp]
+            if "message repeated" in line:
+                continue 
+
+            if 'Failed password' in line:
+                match = failed_login_pattern.search(line)
+                if match:
+                    ip = match.group(1)
+                    time_match = re.match(timestamp_regex, line)
+                    if time_match:
+                        timestamp = time_match.group(1)
+
+                    if ip not in ip_failed_count:
+                        ip_failed_count[ip] = [1, timestamp]
                     else:
-                        failed_count = ip_failed_count[ip][0]
-                        ip_failed_count[ip] = [failed_count + 1, timestamp]
+                        temporary = ip_failed_count[ip]
+                        if temporary[0] >= threshold_count:
+                            current_time = datetime.datetime.now().strftime('%H:%M:%S')
+                            start_time = temporary[1]
+                            result = CheckTimeDifference(start_time, current_time)
+
+                            if result == 1:
+                                doActions.BlockIP(ip)
+                                makeLogs.Attacklogs(f'SSH Bruteforce IP {ip} Blocked', None)
+                                ip_failed_count.pop(ip)
+                            else:
+                                ip_failed_count[ip] = [1, timestamp]  # Reset the failed count and timestamp
+                        else:
+                            failed_count = ip_failed_count[ip][0]
+                            ip_failed_count[ip] = [failed_count + 1, timestamp]
+
+        time.sleep(1) 
+
     file.close()
-0
+

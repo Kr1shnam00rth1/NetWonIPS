@@ -1,11 +1,19 @@
+"""
+    Modules to detect SSH Brute force
+"""
+
 import datetime
 import doActions
 
 ip_failed_count={}
-threshold_time=5*60
+threshold_time=5*60 
+threshold_count=5
 
 
 def CheckTimeDifference(start_time, current_time):
+   """
+     Function to Check if the time difference between the first packet and the current packet is within the threshold.
+   """
     start_time = datetime.datetime.strptime(start_time, '%H:%M:%S')
     current_time = datetime.datetime.strptime(current_time, '%H:%M:%S')
     
@@ -16,6 +24,9 @@ def CheckTimeDifference(start_time, current_time):
     return 1 if difference_time < threshold_time else 0
 
 def MonitorSSHLogs():
+    """
+       Function to Monitor the SSH logs to detect failed login attempts, and block IPs exceeding the threshold count within the threshold time.
+    """
     file =open("/var/log/auth.log")
     while True:
         for line in reversed(file.readlines()):
@@ -27,7 +38,7 @@ def MonitorSSHLogs():
                     ip_failed_count[ip]=[1,timestamp]
                 else:
                     temporary=ip_failed_count[ip]
-                    if temporary[0]>5:
+                    if temporary[0]>threshold_count:
                         current_time=datetime.datetime.now().strftime('%H:%M:%S')
                         start_time=temporary[1]
                         result=CheckTimeDifference(start_time,current_time)

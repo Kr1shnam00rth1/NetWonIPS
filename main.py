@@ -18,10 +18,7 @@ def display_banner():
           ──────────────────────────────────────────
             Developed by: Krishnamoorthi P L
             Version: 1.0
-            Description: A simple IPS built with Snort rules for learning purposes.
-                         Not intended for industrial use.
-          ──────────────────────────────────────────
-          "Because in security, the net always wins!"
+            Description: Designed for learning, built for experimentation.
           ──────────────────────────────────────────
 """
     print(banner)

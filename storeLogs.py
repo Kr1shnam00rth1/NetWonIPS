@@ -12,16 +12,15 @@ def Attacklogs(message, sid):
         file.seek(0)
         reader = csv.reader(file)
         rows = list(reader)
+        writer = csv.writer(file)
+
         
         if len(rows) > 1:
             last_row = rows[-1]
             event_id = int(last_row[0]) + 1
-        
-        writer = csv.writer(file)
-        
-        if file.tell() == 0:  # Check if the file is empty
+        else:
             writer.writerow(['EventId', 'Timestamp', 'Message', 'Sid'])
-        
+            
         if sid is None:
             sid = "NULL"
         
@@ -47,14 +46,12 @@ def Trafficlogs(packet_info):
         file.seek(0)
         reader = csv.reader(file)
         rows = list(reader)
-        
+        writer = csv.writer(file)
+
         if len(rows) > 1:
             last_row = rows[-1]
             event_id = int(last_row[0]) + 1
-        
-        writer = csv.writer(file)
-        
-        if file.tell() == 0:  # Check if the file is empty
+        else:
             writer.writerow(['EventID','Timestamp', 'Protocal', 'Source IP', 'Destination IP', 'Source Port', 'Destination Port'])
         
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")

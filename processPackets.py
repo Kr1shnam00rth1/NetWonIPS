@@ -31,34 +31,34 @@ def ProcessPackets(packet):
         'url': None,
         'time': None,
     }
-    
-    if packet.haslayer(IP):
+    if packet.haslayer(IP) and (packet.haslayer(TCP) or packet.haslayer(UDP) or packet.haslayer(ICMP)):
+        
         packet_info['source_ip'] = packet[IP].src
         packet_info['destination_ip'] = packet[IP].dst
     
-    if packet.haslayer(TCP):
-        packet_info['protocol'] = 'tcp'
-        packet_info['source_port'] = packet[TCP].sport
-        packet_info['destination_port'] = packet[TCP].dport
-        packet_info['flags'] = packet[TCP].flags
+        if packet.haslayer(TCP):
+            packet_info['protocol'] = 'tcp'
+            packet_info['source_port'] = packet[TCP].sport
+            packet_info['destination_port'] = packet[TCP].dport
+            packet_info['flags'] = packet[TCP].flags
 
-    elif packet.haslayer(UDP):
-        packet_info['protocol'] = 'udp'
-        packet_info['source_port'] = packet[UDP].sport
-        packet_info['destination_port'] = packet[UDP].dport
+        elif packet.haslayer(UDP):
+            packet_info['protocol'] = 'udp'
+            packet_info['source_port'] = packet[UDP].sport
+            packet_info['destination_port'] = packet[UDP].dport
 
-    elif packet.haslayer(ICMP):
-        packet_info['protocol'] = 'icmp'
-        packet_info['icode'] = packet[ICMP].code
-        packet_info['itype'] = packet[ICMP].type
+        elif packet.haslayer(ICMP):
+            packet_info['protocol'] = 'icmp'
+            packet_info['icode'] = packet[ICMP].code
+            packet_info['itype'] = packet[ICMP].type
     
-    packet_info['payload'] = bytes(packet.payload)
-    packet_info['time'] = packet.time
+        packet_info['payload'] = bytes(packet.payload)
+        packet_info['time'] = packet.time
     
-    if packet.haslayer(HTTPRequest):
-        packet_info['url'] = GetUrl(packet)
+        if packet.haslayer(HTTPRequest):
+            packet_info['url'] = GetUrl(packet)
     
-    storeLogs.Trafficlogs(packet_info)
+        storeLogs.Trafficlogs(packet_info)
 
 def StartSniffing():
 

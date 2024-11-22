@@ -31,5 +31,34 @@ def Attacklogs(message, sid):
     finally:
         file.close()
 
-def Trafficlogs():
-    pass
+def Trafficlogs(packet_info):
+    
+    """ Function to recode all the traffic inspected by the IPS """
+    event_id=0
+
+    file = open('trafficLogs.csv', mode='a+', newline='')
+    protocol=packet_info['protocol']
+    source_ip=packet_info['source_ip']
+    destination_ip=packet_info['destination_ip']
+    source_port=packet_info['source_port']
+    destination_port=packet_info['destination_port']
+
+    try:
+        file.seek(0)
+        reader = csv.reader(file)
+        rows = list(reader)
+        
+        if len(rows) > 1:
+            last_row = rows[-1]
+            event_id = int(last_row[0]) + 1
+        
+        writer = csv.writer(file)
+        
+        if file.tell() == 0:  # Check if the file is empty
+            writer.writerow(['EventID','Timestamp', 'Protocal', 'Source IP', 'Destination IP', 'Source Port', 'Destination Port'])
+        
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        writer.writerow([event_id, timestamp, protocol, source_ip, destination_ip, source_port, destination_port])
+    
+    finally:
+        file.close()

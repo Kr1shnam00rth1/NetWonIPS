@@ -3,6 +3,7 @@ import time
 import os
 import processSSH
 #import processFTP
+import ProcessPackets
 
 def display_banner():
     banner = r"""
@@ -41,9 +42,10 @@ if __name__ == "__main__":
     
     #ssh_thread = Thread(target=processSSH.MonitorSSHLogs)
     #ftp_thread =Thread(target=processFTP.MonitorFTPLogs)
-
+    #packets_thread= Thread(target=processPackets.ProcessPackets)
     #ssh_thread.start()
     #ftp_thread.start()
-
+    #packets_thread.start()
     #ssh_thread.join()
     #ftp_thread.join()
+    #packets_thread.join()

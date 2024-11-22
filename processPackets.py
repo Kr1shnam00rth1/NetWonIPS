@@ -4,7 +4,8 @@
 from scapy.all import sniff
 from scapy.layers.inet import IP, TCP, UDP, ICMP
 from scapy.layers.http import HTTPRequest
-import storeLogs
+#import storeLogs
+#import matchRules
 
 def GetUrl(packet):
 
@@ -57,13 +58,15 @@ def ProcessPackets(packet):
     
         if packet.haslayer(HTTPRequest):
             packet_info['url'] = GetUrl(packet)
-    
-        storeLogs.Trafficlogs(packet_info)
+        print(packet_info)
+        return
+        #storeLogs.TrafficLogs(packet_info)
+        #matchRules.MatchRules(packet_info)
 
 def StartSniffing():
 
     """Function to Sniffs packets and sends each to the process_packet function."""  
     
-    sniff(iface="wlo1",prn=ProcessPackets,count=5)
+    sniff(iface="wlo1",prn=ProcessPackets,count=2)
 
 StartSniffing()

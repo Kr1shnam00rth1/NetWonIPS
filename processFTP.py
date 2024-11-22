@@ -56,7 +56,7 @@ def MonitorFTPLogs():
 
                                 if result == 1:
                                     doActions.BlockIP(ip)
-                                    storeLogs.Attacklogs(f'FTP Bruteforce IP {ip} Blocked', None)
+                                    storeLogs.AttackLogs(f'FTP Bruteforce IP {ip} Blocked', None)
                                     ip_failed_count.pop(ip)
                                     
                                 else:

@@ -3,7 +3,7 @@
 """
 import datetime
 import doActions
-import generateLogs
+import storeLogs
 import time
 import re
 
@@ -29,8 +29,8 @@ def MonitorFTPLogs():
     
     file = open("/var/log/vsftpd.log")
     file.seek(0, 2)
-    failed_login_pattern = r"'FAIL LOGIN: Client "(\d+\.\d+\.\d+\.\d+)""
-    timestamp_regex = r"^\w{3}\s\w{3}\s\d{2}\s(\d{2}:\d{2}:\d{2})"
+    failed_login_pattern = re.compile(r'FAIL LOGIN: Client (\d+\.\d+\.\d+\.\d+)')
+    timestamp_regex = r'^\w{3}\s\w{3}\s\d{2}\s(\d{2}:\d{2}:\d{2})'
     
     while True:
         line = file.readline()
@@ -56,7 +56,7 @@ def MonitorFTPLogs():
 
                                 if result == 1:
                                     doActions.BlockIP(ip)
-                                    generateLogs.Attacklogs(f'FTP Bruteforce IP {ip} Blocked', None)
+                                    storeLogs.Attacklogs(f'FTP Bruteforce IP {ip} Blocked', None)
                                     ip_failed_count.pop(ip)
                                     
                                 else:

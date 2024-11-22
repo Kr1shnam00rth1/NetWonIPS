@@ -13,13 +13,21 @@ def display_banner():
   ██║ ╚████║███████╗   ██║   ╚███╔███╔╝╚██████╔╝██║ ╚████║
   ╚═╝  ╚═══╝╚══════╝   ╚═╝    ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═══╝
 
-          ──────────────────────────────────────────
-          NetWon Intrusion Prevention System (IPS)
-          ──────────────────────────────────────────
-            Developed by: Krishnamoorthi P L
-            Version: 1.0
-            Description: Designed for learning, built for experimentation.
-          ──────────────────────────────────────────
+  ┌───────────────────────────────────────────────────────┐
+  │          NetWon Intrusion Prevention System           │
+  ├───────────────────────────────────────────────────────┤
+  │   Developed by  :  Krishnamoorthi P L                 │
+  │   Purpose       :  Detects and mitigates network      │
+  │                    intrusions in real-time.           │
+  │                                                       │
+  │   Features      : - Snort rule-based detection.       │
+  │                   - SSH & FTP brute force detection.  │
+  │                   - Alerts, blocking, and logging.    │
+  │                   - Flexible custom rule support.     │
+  │                                                       │
+  │   Note          :  Designed for learning and          │
+  │                    experimentation in cybersecurity.  │
+  └───────────────────────────────────────────────────────┘
 """
     print(banner)
 
@@ -31,11 +39,11 @@ if __name__ == "__main__":
     time.sleep(10)
     clear_terminal()
     
-    ssh_thread = Thread(target=processSSH.MonitorSSHLogs)
+    #ssh_thread = Thread(target=processSSH.MonitorSSHLogs)
     #ftp_thread =Thread(target=processFTP.MonitorFTPLogs)
 
-    ssh_thread.start()
+    #ssh_thread.start()
     #ftp_thread.start()
 
-    ssh_thread.join()
+    #ssh_thread.join()
     #ftp_thread.join()

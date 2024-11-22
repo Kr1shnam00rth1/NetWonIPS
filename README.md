@@ -8,7 +8,7 @@
 + ```processSSH.py``` : Monitors SSH traffic for brute force attacks.
 + ```matchRules.py``` : Matches packet attributes with Snort rules and triggers actions via ```doActions.py```.
 + ```doActions.py``` : Executes corresponding actions based on detected threats.
-+ ```generateLogs.py``` : Generates appropriate logs for various attacks.
++ ```storeLogs.py``` : Stores appropriate logs for various attacks.
 + ```snortRules.txt``` : Contains Snort rules for threat detection.
 + ```attackLogs.csv``` : Stores logs of detected attacks.
 + ```trafficLogs.csv``` : Stores logs of analyzed network traffic.

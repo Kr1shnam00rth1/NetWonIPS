@@ -3,7 +3,7 @@
 """
 import datetime
 import doActions
-import makeLogs
+import storeLogs
 import time
 import re
 
@@ -29,8 +29,8 @@ def MonitorSSHLogs():
     
     file = open("/var/log/auth.log")
     file.seek(0, 2)
-    failed_login_pattern = r"Failed password for .+ from (\d+\.\d+\.\d+\.\d+)"
-    timestamp_regex = r"^\w{3}\s\d{2}\s(\d{2}:\d{2}:\d{2})"
+    failed_login_pattern = re.compile(r'Failed password for .+ from (\d+\.\d+\.\d+\.\d+)') 
+    timestamp_regex = r'^\w{3}\s\d{2}\s(\d{2}:\d{2}:\d{2})'
     
     while True:
         line = file.readline()
@@ -59,7 +59,7 @@ def MonitorSSHLogs():
 
                                 if result == 1:
                                     doActions.BlockIP(ip)
-                                    generateLogs.Attacklogs(f'SSH Bruteforce IP {ip} Blocked', None)
+                                    storeLogs.Attacklogs(f'SSH Bruteforce IP {ip} Blocked', None)
                                     ip_failed_count.pop(ip)
                                     
                                 else:
@@ -70,3 +70,5 @@ def MonitorSSHLogs():
         time.sleep(1)
 
     file.close()
+
+MonitorSSHLogs()

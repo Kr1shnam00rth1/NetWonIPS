@@ -54,8 +54,7 @@ def ProcessPackets(packet):
             packet_info['itype'] = packet[ICMP].type
     
         packet_info['payload'] = bytes(packet.payload)
-        packet_info['time'] = packet.time
-    
+        packet_info['time'] = int(packet.time)
         if packet.haslayer(HTTPRequest):
             packet_info['url'] = GetUrl(packet)
         print(packet_info)

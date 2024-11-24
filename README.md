@@ -1,5 +1,10 @@
 ## Network Intrusion Prevention System
 
+### Description
+
++ Developed a Network Intrusion Prevention System using Python, utilizing Scapy for real-time packet inspection, implementing Snort rules for threat detection, and used IPTables for dynamic packet blocking.
+
++ Created specialized modules to detect SSH and FTP brute-force login attempts through rate-limiting techniques and detailed logging mechanisms for attack and traffic data, facilitating continuous monitoring and reporting.
 ### Project Structure
 
 + ```main.py``` : Entry point; coordinates all modules.

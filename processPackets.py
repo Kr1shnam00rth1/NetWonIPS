@@ -4,8 +4,8 @@
 from scapy.all import sniff
 from scapy.layers.inet import IP, TCP, UDP, ICMP
 from scapy.layers.http import HTTPRequest
-#import storeLogs
-#import matchRules
+import storeLogs
+import matchRules
 
 def GetUrl(packet):
 
@@ -30,7 +30,6 @@ def ProcessPackets(packet):
         'itype': None,
         'payload': None,
         'url': None,
-        'time': None,
     }
     if packet.haslayer(IP) and (packet.haslayer(TCP) or packet.haslayer(UDP) or packet.haslayer(ICMP)):
         
@@ -41,7 +40,7 @@ def ProcessPackets(packet):
             packet_info['protocol'] = 'tcp'
             packet_info['source_port'] = packet[TCP].sport
             packet_info['destination_port'] = packet[TCP].dport
-            packet_info['flags'] = packet[TCP].flags
+            packet_info['flags'] = str(packet[TCP].flags)
 
         elif packet.haslayer(UDP):
             packet_info['protocol'] = 'udp'
@@ -50,22 +49,19 @@ def ProcessPackets(packet):
 
         elif packet.haslayer(ICMP):
             packet_info['protocol'] = 'icmp'
-            packet_info['icode'] = packet[ICMP].code
-            packet_info['itype'] = packet[ICMP].type
+            packet_info['icode'] = str(packet[ICMP].code)
+            packet_info['itype'] = str(packet[ICMP].type)
     
         packet_info['payload'] = bytes(packet.payload)
-        packet_info['time'] = int(packet.time)
         if packet.haslayer(HTTPRequest):
             packet_info['url'] = GetUrl(packet)
-        print(packet_info)
-        return
-        #storeLogs.TrafficLogs(packet_info)
-        #matchRules.MatchRules(packet_info)
+        storeLogs.TrafficLogs(packet_info)
+        matchRules.MatchRules(packet_info)
 
 def StartSniffing():
 
     """Function to Sniffs packets and sends each to the process_packet function."""  
     
-    sniff(iface="wlo1",prn=ProcessPackets,count=2)
+    sniff(iface="wlo1",prn=ProcessPackets)
 
 StartSniffing()

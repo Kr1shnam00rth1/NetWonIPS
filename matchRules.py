@@ -8,6 +8,9 @@ import storeLogs
 import re
 import time
 
+blocked_ips=set()
+count_ips={}
+
 def ExtractRuleInfo(rule):
    
    """ Function to extact infomation from give rule"""
@@ -94,62 +97,55 @@ def ExtractRuleInfo(rule):
 def MatchRules(packet_info):
    
    """ Function to perform a match of packet info with rule info if rule matched the corresponding action could be taken """
-   
-   blocked_ips=set()
-   count_ips={}
+  
    if packet_info['source_ip'] in blocked_ips:
       doActions.BlockIP(packet_info['source_ip'])
       return
    
    file=open("snortRules.txt",mode="r")
    while True:
-      rule=file.readline()   
-      if rule:
-         print(rule)
-         rule_info=ExtractRuleInfo(rule)
       
+      rule=file.readline()   
+      
+      if rule:
+         rule_info=ExtractRuleInfo(rule)
+         
          if rule_info['protocol']!=packet_info['protocol']:
             continue
-         print("test1")
+      
          if rule_info['source_ip']!=packet_info['source_ip'] and rule_info['source_ip']!='any':
             continue
-         print("test2")
+         
          if rule_info['source_port']!=packet_info['source_port'] and rule_info['source_port']!='any':
             continue
-         print("test3")
+      
          if rule_info['destination_ip']!=str(packet_info['destination_ip']) and rule_info['destination_ip']!='any':
             continue
-         print("test4") 
+          
          if rule_info['destination_port']!=str(packet_info['destination_port']) and rule_info['destination_port']!='any':
             continue
-         print("test5")
-         print(packet_info)
-         print(rule_info)
-
+         
          if rule_info['payload']!=None and packet_info['payload']!=None:
             if str(rule_info['payload']) not in str(packet_info['payload']):
                continue
-         print("Fuck")
+         
          if rule_info['url']!=None and packet_info['url']!=None: 
             if rule_info['url'] not in packet_info['url']:
                continue
-         print("test6")
       
          if rule_info['flags']!=None:
-            print(packet_info['flags'])
+         
             if rule_info['flags'] not in packet_info['flags']:
                continue
-         print("test7")
+
          if rule_info['icode']!=None:
-            if  rule_info['icode'] != packet_info['icode']:
+            if  str(rule_info['icode']) != str(packet_info['icode']):
                continue
-         print("test8")
 
          if rule_info['itype']!=None:
-            if rule_info['itype']!=packet_info['itype']:
+            if str(rule_info['itype'])!=str(packet_info['itype']):
                continue
-         print("test9")
-         print("")
+
          if rule_info['count']!=None:
             
             if rule_info['track']=="by_dst":
@@ -166,46 +162,69 @@ def MatchRules(packet_info):
                   if count_info[0]>=rule_info['count'] and (current_time-count_info[1])<rule_info['seconds']:
                      count_ip.remove(packet_info['source_ip'])
                      storeLogs(rule_info['msg'],rule_info['sid'])
+                     
                      if rule_info['action']=="drop":
                         doActions.BlockIP(packet_info['source_ip'])
+                     
                      elif rule_info['action']=="block":
                         doActions.BlockIP(packet_info['source_ip'])
                         blocked_ips.add(packet_info['scurce_ip']) 
                      time.sleep(1)
                
-            if rule_info['track']=="by_src":
-               
-               if packet_info['source_ip'] not in count_ips:
+         if rule_info['track'] == "by_src":
+    
+            if packet_info['source_ip'] not in count_ips:
+               current_time = int(time.time())
+               count_ips[packet_info['source_ip']] = [1, current_time] 
+            else:
+               count_info = count_ips[packet_info['source_ip']]
+               current_time = int(time.time())
+
+               if count_info[0] >= int(rule_info['count']) and (current_time - count_info[1]) < int(rule_info['seconds']):
+                  count_ips.remove(packet_info['source_ip'])
+                  storeLogs(rule_info['msg'], rule_info['sid'])
+            
+                  if rule_info['action'] == "drop" or rule_info['action'] == "block":
+                     doActions.BlockIP(packet_info['source_ip'])
+                     blocked_ips.add(packet_info['source_ip'])  
+                     time.sleep(1)
                   
-                  current=int(time.time())
-                  count_ips[packet_info['source_ip']]=[1,current_time]          
+               else:
+                  count_ips[packet_info['source_ip']] = [count_info[0] + 1, current_time]
+
+         elif rule_info['track'] == "by_dst":
+            
+            if packet_info['destination_ip'] not in count_ips:
+               current_time = int(time.time())
+               count_ips[packet_info['destination_ip']] = [1, current_time]  
+            
+            else:
+               count_info = count_ips[packet_info['destination_ip']]
+               current_time = int(time.time())
+        
+               if count_info[0] >= int(rule_info['count']) and (current_time - count_info[1]) < int(rule_info['seconds']):
+                  count_ips.remove(packet_info['destination_ip'])
+                  storeLogs(rule_info['msg'], rule_info['sid'])
+            
+                  if rule_info['action'] == "drop" or rule_info['action'] == "block":
+                     doActions.BlockIP(packet_info['destination_ip'])
+                     blocked_ips.add(packet_info['destination_ip'])  
+                     time.sleep(1)
                else:
                   
-                  count_info=count_ips[packet_info['source_ip']]
-                  current_time=int(time.time())
-                  
-                  if count_info[0]>=rule_info['count'] and (current_time-count_info[1])<rule_info['seconds']:
-                     count_ip.remove(packet_info['source_ip'])
-                     storeLogs(rule_info['msg'],rule_info['sid'])
-                     if rule_info['action']=="drop":
-                        doActions.BlockIP(packet_info['source_ip'])
-                     elif rule_info['action']=="block":
-                        doActions.BlockIP(packet_info['source_ip'])
-                        blocked_ips.add(packet_info['scurce_ip']) 
-                     time.sleep(1)
-                        
-            else:
-               pass
-         
+                  count_ips[packet_info['destination_ip']] = [count_info[0] + 1, current_time]
+
+
          storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
          
          if rule_info['action']=="drop":
             doActions.BlockIP(packet_info['source_ip'])
          
+         
          elif rule_info['action']=="block":
             blocked_ips.add(packet_info['source_ip'])
             doActions.BlockIP(packet_info['source_ip'])
-            
-      
+         break
+         
       else:
          break    

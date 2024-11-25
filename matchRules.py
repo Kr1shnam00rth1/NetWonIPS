@@ -6,7 +6,6 @@ import storeLogs
 import re
 import time
 
-blocked_ips=set()
 count_ips={}
 
 def ExtractRuleInfo(rule):
@@ -95,10 +94,7 @@ def ExtractRuleInfo(rule):
 def MatchRules(packet_info):
    
    """ Function to perform a match of packet info with rule info if rule matched the corresponding action could be taken """
-  
-   if packet_info['source_ip'] in blocked_ips:
-      doActions.BlockIP(packet_info['source_ip'])
-      return
+
    
    file=open("snortRules.txt",mode="r")
    while True:
@@ -182,8 +178,8 @@ def MatchRules(packet_info):
                   count_ips.remove(packet_info['source_ip'])
                   storeLogs(rule_info['msg'], rule_info['sid'])
             
-                  if rule_info['action'] == "drop" or rule_info['action'] == "block":
-                     doActions.BlockIP(packet_info['source_ip'])
+                  if rule_info['action'] == "drop":
+                     doActions.DropIPIP(packet_info['source_ip'])
                      blocked_ips.add(packet_info['source_ip'])  
                      time.sleep(1)
                   
@@ -204,25 +200,21 @@ def MatchRules(packet_info):
                   count_ips.remove(packet_info['destination_ip'])
                   storeLogs(rule_info['msg'], rule_info['sid'])
             
-                  if rule_info['action'] == "drop" or rule_info['action'] == "block":
-                     doActions.BlockIP(packet_info['destination_ip'])
+                  if rule_info['action'] == "drop":
+                     doActions.DropIP(packet_info['destination_ip'])
                      blocked_ips.add(packet_info['destination_ip'])  
                      time.sleep(1)
                else:
                   
                   count_ips[packet_info['destination_ip']] = [count_info[0] + 1, current_time]
 
-
-         storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+         if rule_info['action']=='alert':
+            storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
          
-         if rule_info['action']=="drop":
-            doActions.BlockIP(packet_info['source_ip'])
-         
-         
-         elif rule_info['action']=="block":
-            blocked_ips.add(packet_info['source_ip'])
-            doActions.BlockIP(packet_info['source_ip'])
-         break
-         
+         elif rule_info['action']=="drop": 
+            result=doActions.DropIP(packet_info['source_ip'])  
+            if result==1:
+               storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])  
+            
       else:
          break    

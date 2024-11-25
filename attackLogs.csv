@@ -7,3 +7,5 @@ EventId,Timestamp,Message,Sid
 5,2024-11-25 12:25:08,Potential ICMP Flood Attack,10002
 6,2024-11-25 12:28:17,ICMP Request message Detected,10004
 7,2024-11-25 12:35:58,Malicious Payload Detected,10009
+8,2024-11-25 12:51:10,SSH Bruteforce IP 127.0.0.1 Blocked,NULL
+9,2024-11-25 13:11:30,FTP Bruteforce IP 127.0.0.1 Blocked,NULL

@@ -71,4 +71,3 @@ def MonitorSSHLogs():
 
     file.close()
 
-MonitorSSHLogs()

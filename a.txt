@@ -1,4 +1,0 @@
-
-alert tcp any any -> any any (content: "|FF D8 FF|"; msg: "JPEG File Detected"; sid: 10006)
-
-

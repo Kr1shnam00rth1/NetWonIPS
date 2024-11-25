@@ -1,8 +1,0 @@
-#alert for TCP packet:
-#drop ICMP 192.168.220.129 any -> any any (msg: "ICMP flood detection"; sid: 111; threshold: type threshold, track by_src, count 3, seconds 10)
-#drop ICMP any any -> 192.168.220.128 any (msg: "DDoS HTTP Flood detected"; sid:10005; threshold: type threshold, track by_src, count 35, seconds 8)
-#drop TCP any any -> any 80 (content: "../"; msg: "HTTP directory traversal attempt detected"; sid:10017)
-#drop TCP 192.168.220.129 any -> any any (flags: S; msg: "SYN Flood attack detected"; sid:10009; threshold: type threshold, track by_src, count 10, seconds 1)
-#alert any 192.168.220.129 any -> any any (msg: "droping cuz of ip"; sid: 123)
-#drop ICMP 192.168.184.128 any -> any any (flags: S; msg: "dropping ICMP"; sid: 00001)
-#drop ICMP any any -> any any (msg: "alert ICMP"; sid: 00002)

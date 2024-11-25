@@ -1,3 +1,7 @@
+"""
+    Main Module Entry point; coordinates all modules.
+"""
+
 from threading import Thread
 import time
 import os
@@ -6,6 +10,9 @@ import processFTP
 import processPackets
 
 def display_banner():
+
+    """Module to Display Banner Information"""
+
     banner = r"""
   ███╗   ██╗███████╗████████╗██╗    ██╗ ██████╗ ███╗   ██╗
   ████╗  ██║██╔════╝╚══██╔══╝██║    ██║██╔═══██╗████╗  ██║
@@ -32,13 +39,13 @@ def display_banner():
 """
     print(banner)
 
-def clear_terminal():
-        os.system('clear')
-
 if __name__ == "__main__":
+     
+    """Main Code to invoke all the modules, to run a separate threads"""
+    
     display_banner()
     time.sleep(2)
-    clear_terminal()
+    os.system('clear')
     
     ssh_thread = Thread(target=processSSH.MonitorSSHLogs)
     print("SSH Monitoring Started")
@@ -50,7 +57,7 @@ if __name__ == "__main__":
     print("Packet Processing for Snort Rule Matching Stated")
     
     time.sleep(2)
-    clear_terminal()
+    os.system('clear')
     
     ssh_thread.start()
     ftp_thread.start()

@@ -33,6 +33,7 @@ def AttackLogs(message, sid):
 def TrafficLogs(packet_info):
     
     """ Function to recode all the traffic inspected by the IPS """
+    
     event_id=0
 
     file = open('trafficLogs.csv', mode='a+', newline='')

@@ -25,6 +25,7 @@ def CheckTimeDifference(start_time, current_time):
     return 1 if difference_time < threshold_time else 0
 
 def MonitorFTPLogs():
+    
     """Function to monitor the FTP logs to detect failed login attempts and block IPs exceeding the threshold count within the threshold time."""
     
     file = open("/var/log/vsftpd.log")

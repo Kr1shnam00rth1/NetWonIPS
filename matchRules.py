@@ -1,7 +1,5 @@
 """
-   
    Module to match the every packet information with a all rules, if any rule matches the corresponding actions could be taken
-
 """
 import doActions
 import storeLogs

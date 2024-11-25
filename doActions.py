@@ -1,8 +1,13 @@
+"""
+    Module to Drop the packets
+"""
+
 import subprocess
  
 def BlockIP(ip):
 
     """ Function to Drop a Packet from Certian IP address"""
+
     try:
         subprocess.run(['sudo', 'iptables', '-A', 'INPUT', '-s', ip, '-j', 'DROP'],check=True)
         print(f"Successfully blocked IP address {ip}.")

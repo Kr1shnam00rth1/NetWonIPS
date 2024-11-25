@@ -38,11 +38,8 @@ def MonitorFTPLogs():
             line = line.strip()
             if 'FAIL LOGIN' in line:
                 match = re.search(failed_login_pattern,line)
-                print(line)
-                print(match)
                 if match:
                     ip = match.group(1)
-                    print(ip)
                     time_match = re.match(timestamp_regex, line)
                     if time_match:
                         timestamp = time_match.group(1)

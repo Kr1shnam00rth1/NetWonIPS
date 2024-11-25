@@ -2,8 +2,8 @@ from threading import Thread
 import time
 import os
 import processSSH
-#import processFTP
-import ProcessPackets
+import processFTP
+import processPackets
 
 def display_banner():
     banner = r"""
@@ -37,16 +37,19 @@ def clear_terminal():
 
 if __name__ == "__main__":
     display_banner()
-    time.sleep(10)
+    time.sleep(2)
     clear_terminal()
     
     ssh_thread = Thread(target=processSSH.MonitorSSHLogs)
     print("SSH Monitoring Started")
+
     ftp_thread =Thread(target=processFTP.MonitorFTPLogs)
     print("FTP Monitoring Started")
-    packets_thread= Thread(target=processPackets.ProcessPackets)
+    
+    packets_thread= Thread(target=processPackets.StartSniffing)
     print("Packet Processing for Snort Rule Matching Stated")
-    time.sleep(10)
+    
+    time.sleep(2)
     clear_terminal()
     
     ssh_thread.start()

@@ -1,9 +1,10 @@
 ## Network Intrusion Prevention System
 
-### Description
+### Overview
 
-+ Developed a Network Intrusion Prevention System using Python, utilizing Scapy for real-time packet inspection, implementing Snort rules for threat detection, and used IPTables for dynamic packet blocking.
-+ Created specialized modules to detect SSH and FTP brute-force login attempts through rate-limiting techniques and detailed logging mechanisms for attack and traffic data, facilitating continuous monitoring and reporting.
++ Developed a Network Intrusion Prevention System (NIPS) using Python, utilizing Scapy for real-time packet inspection, implementing Snort rules for threat detection, and configuring IPTables for dynamic packet filtering.  
++ Designed and implemented modules to detect SSH and FTP brute-force login attempts, using rate-limiting techniques and detailed logging for attack and traffic data, enabling continuous monitoring and automated reporting.
+       
 ### Project Structure
 
 + ```main.py``` : Entry point; coordinates all modules.
@@ -16,3 +17,8 @@
 + ```snortRules.txt``` : Contains Snort rules for threat detection.
 + ```attackLogs.csv``` : Stores logs of detected attacks.
 + ```trafficLogs.csv``` : Stores logs of analyzed network traffic.
+
+### Reference
+
++ [Snort Rules](https://docs.snort.org/start/rules)
++ ```ChatGPT```

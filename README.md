@@ -18,7 +18,18 @@
 + ```attackLogs.csv``` : Stores logs of detected attacks.
 + ```trafficLogs.csv``` : Stores logs of analyzed network traffic.
 
+### Usage
+
+```sh
+pip install scapy
+sudo apt install iptables
+git clone https://github.com/Kr1shnam00rth1/NetWonIPS
+cd NetWonIPS
+sudo python3 main.py
+```
++ To add a new Snort rule with specific conditions, include it in the rule.txt file and write the matching code for the condition in the matchRule.py file.
+
 ### Reference
 
 + [Snort Rules](https://docs.snort.org/start/rules)
-+ ```ChatGPT```
+  

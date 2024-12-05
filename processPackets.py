@@ -64,4 +64,3 @@ def StartSniffing():
     
     sniff(iface="wlo1",prn=ProcessPackets)
 
-StartSniffing()

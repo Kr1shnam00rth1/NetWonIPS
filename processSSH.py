@@ -28,23 +28,27 @@ def MonitorSSHLogs():
     """Function to monitor the SSH logs to detect failed login attempts and block IPs exceeding the threshold count within the threshold time."""
     
     file = open("/var/log/auth.log")
+
     file.seek(0, 2)
     failed_login_pattern = re.compile(r'Failed password for .+ from (\d+\.\d+\.\d+\.\d+)') 
-    timestamp_regex = r'^\w{3}\s\d{2}\s(\d{2}:\d{2}:\d{2})'
+    timestamp_regex = re.compile(r'^\w{3}\s+\d{1,2}\s+(\d{2}:\d{2}:\d{2})')
     
     while True:
         line = file.readline()
         if line:
             line = line.strip()
-
+            
             if "message repeated" in line:
                 continue 
 
-            if 'Failed password' in line:
+            if "Failed password" in line:
+              
                 match = failed_login_pattern.search(line)
+
                 if match:
                     ip = match.group(1)
-                    time_match = re.match(timestamp_regex, line)
+                    time_match = timestamp_regex.search(line)
+
                     if time_match:
                         timestamp = time_match.group(1)
 
@@ -56,7 +60,7 @@ def MonitorSSHLogs():
                                 current_time = datetime.datetime.now().strftime('%H:%M:%S')
                                 start_time = temporary[1]
                                 result = CheckTimeDifference(start_time, current_time)
-
+                            
                                 if result == 1:
                                     doActions.BlockIP(ip)
                                     storeLogs.AttackLogs(f'SSH Bruteforce IP {ip} Blocked', None)
@@ -71,4 +75,3 @@ def MonitorSSHLogs():
 
     file.close()
 
-MonitorSSHLogs()

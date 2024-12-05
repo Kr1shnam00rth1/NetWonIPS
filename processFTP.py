@@ -29,21 +29,23 @@ def MonitorFTPLogs():
     
     file = open("/var/log/vsftpd.log")
     file.seek(0, 2)
-    failed_login_pattern = re.compile(r'FAIL LOGIN: Client (\d+\.\d+\.\d+\.\d+)')
-    timestamp_regex = r'^\w{3}\s\w{3}\s\d{2}\s(\d{2}:\d{2}:\d{2})'
+    failed_login_pattern = re.compile(r'FAIL LOGIN: Client "(\d+\.\d+\.\d+\.\d+)"')
+    timestamp_regex = r"(\d{2}:\d{2}:\d{2})"  
     
     while True:
         line = file.readline()
         if line:
             line = line.strip()
-
+            
             if 'FAIL LOGIN' in line:
                 match = failed_login_pattern.search(line)
+                
                 if match:
                     ip = match.group(1)
-                    time_match = re.match(timestamp_regex, line)
+                    time_match = re.search(timestamp_regex, line)
+                
                     if time_match:
-                        timestamp = time_match.group(1)
+                        timestamp = time_match.group(1)  
 
                         if ip not in ip_failed_count:
                             ip_failed_count[ip] = [1, timestamp]
@@ -67,4 +69,3 @@ def MonitorFTPLogs():
         
     file.close()
 
-MonitorFTPLogs()

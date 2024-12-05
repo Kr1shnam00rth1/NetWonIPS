@@ -31,6 +31,7 @@ def ProcessPackets(packet):
         'payload': None,
         'url': None,
     }
+    
     if packet.haslayer(IP) and (packet.haslayer(TCP) or packet.haslayer(UDP) or packet.haslayer(ICMP)):
         
         packet_info['source_ip'] = packet[IP].src

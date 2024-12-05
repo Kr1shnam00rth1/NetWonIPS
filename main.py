@@ -2,8 +2,8 @@ from threading import Thread
 import time
 import os
 import processSSH
-#import processFTP
-import ProcessPackets
+import processFTP
+import processPackets
 
 def display_banner():
     banner = r"""
@@ -31,21 +31,34 @@ def display_banner():
   └───────────────────────────────────────────────────────┘
 """
     print(banner)
-
-def clear_terminal():
-        os.system('clear')
+    print("NetWon IPS started monitoring !!!")
 
 if __name__ == "__main__":
+
     display_banner()
-    time.sleep(10)
-    clear_terminal()
+    time.sleep(2)
+    os.system('clear')
     
-    #ssh_thread = Thread(target=processSSH.MonitorSSHLogs)
-    #ftp_thread =Thread(target=processFTP.MonitorFTPLogs)
-    #packets_thread= Thread(target=processPackets.ProcessPackets)
-    #ssh_thread.start()
-    #ftp_thread.start()
-    #packets_thread.start()
-    #ssh_thread.join()
-    #ftp_thread.join()
-    #packets_thread.join()
+    ssh_thread = Thread(target=processSSH.MonitorSSHLogs)
+    ssh_thread.daemon = True
+  
+    
+    ftp_thread =Thread(target=processFTP.MonitorFTPLogs)
+    ftp_thread.daemon = True
+  
+
+    packets_thread=Thread(target=processPackets.StartSniffing)
+    packets_thread.daemon = True
+
+
+    ssh_thread.start()
+    ftp_thread.start()
+    packets_thread.start()
+
+
+    
+    os.system('clear')
+    
+    ssh_thread.join()
+    ftp_thread.join()
+    packets_thread.join()

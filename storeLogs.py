@@ -13,7 +13,6 @@ def AttackLogs(message, sid):
         reader = csv.reader(file)
         rows = list(reader)
         writer = csv.writer(file)
-
         
         if len(rows) > 1:
             last_row = rows[-1]

@@ -32,12 +32,12 @@ def ExtractRuleInfo(rule):
     }
 
    rule_parts=rule.split(" ")
-   rule_info['action']=rule_parts[0]
-   rule_info['protocol']=rule_parts[1]
-   rule_info['source_ip']=rule_parts[2]
-   rule_info['source_port']=rule_parts[3]
-   rule_info['destination_ip']=rule_parts[5]
-   rule_info['destination_port']=rule_parts[6]
+   rule_info['action'] = rule_parts[0]
+   rule_info['protocol'] = rule_parts[1]
+   rule_info['source_ip'] = rule_parts[2]
+   rule_info['source_port'] = rule_parts[3]
+   rule_info['destination_ip'] = rule_parts[5]
+   rule_info['destination_port'] = rule_parts[6]
 
    pattern = r'flags:\s*([a-zA-Z]+)'
    match=re.search(pattern,rule)
@@ -87,7 +87,7 @@ def ExtractRuleInfo(rule):
    match=re.search(pattern,rule)
    if match:
       rule_info['sid']=match.group(0)
-
+   
    return rule_info
    
 
@@ -105,107 +105,96 @@ def MatchRules(packet_info):
    while True:
       rule=file.readline()   
       if rule:
-         print(rule)
+         
          rule_info=ExtractRuleInfo(rule)
       
          if rule_info['protocol']!=packet_info['protocol']:
             continue
-         print("test1")
+         
          if rule_info['source_ip']!=packet_info['source_ip'] and rule_info['source_ip']!='any':
             continue
-         print("test2")
+         
          if rule_info['source_port']!=packet_info['source_port'] and rule_info['source_port']!='any':
             continue
-         print("test3")
+      
          if rule_info['destination_ip']!=str(packet_info['destination_ip']) and rule_info['destination_ip']!='any':
             continue
-         print("test4") 
+         
          if rule_info['destination_port']!=str(packet_info['destination_port']) and rule_info['destination_port']!='any':
             continue
-         print("test5")
-         print(packet_info)
-         print(rule_info)
 
          if rule_info['payload']!=None and packet_info['payload']!=None:
             if str(rule_info['payload']) not in str(packet_info['payload']):
                continue
-         print("Fuck")
+      
          if rule_info['url']!=None and packet_info['url']!=None: 
             if rule_info['url'] not in packet_info['url']:
                continue
-         print("test6")
-      
+         
          if rule_info['flags']!=None:
-            print(packet_info['flags'])
             if rule_info['flags'] not in packet_info['flags']:
                continue
-         print("test7")
+      
          if rule_info['icode']!=None:
             if  rule_info['icode'] != packet_info['icode']:
                continue
-         print("test8")
+         
 
          if rule_info['itype']!=None:
             if rule_info['itype']!=packet_info['itype']:
                continue
-         print("test9")
-         print("")
+
          if rule_info['count']!=None:
             
-            if rule_info['track']=="by_dst":
+            current_time=int(time.time())
+
+            if rule_info['track'] == "by_dst":
                
                if packet_info['destination_ip'] not in count_ips:
-                  
-                  current_time=int(time.time())
+
                   count_ips[packet_info['destination_ip']]=[1,current_time]        
+
                else:
                   
                   count_info=count_ips[packet_info['destination_ip']]
-                  current_time=int(time.time())
                   
                   if count_info[0]>=rule_info['count'] and (current_time-count_info[1])<rule_info['seconds']:
-                     count_ip.remove(packet_info['source_ip'])
+                     count_ips.pop(packet_info['source_ip'])
                      storeLogs(rule_info['msg'],rule_info['sid'])
-                     if rule_info['action']=="drop":
+                     
+                     if rule_info['action'] == "drop":
                         doActions.BlockIP(packet_info['source_ip'])
-                     elif rule_info['action']=="block":
-                        doActions.BlockIP(packet_info['source_ip'])
-                        blocked_ips.add(packet_info['scurce_ip']) 
                      time.sleep(1)
                
-            if rule_info['track']=="by_src":
+            if rule_info['track'] == "by_src":
                
                if packet_info['source_ip'] not in count_ips:
                   
-                  current=int(time.time())
                   count_ips[packet_info['source_ip']]=[1,current_time]          
                else:
                   
                   count_info=count_ips[packet_info['source_ip']]
-                  current_time=int(time.time())
                   
                   if count_info[0]>=rule_info['count'] and (current_time-count_info[1])<rule_info['seconds']:
-                     count_ip.remove(packet_info['source_ip'])
+                     count_ips.pop(packet_info['source_ip'])
                      storeLogs(rule_info['msg'],rule_info['sid'])
+                     
                      if rule_info['action']=="drop":
                         doActions.BlockIP(packet_info['source_ip'])
-                     elif rule_info['action']=="block":
-                        doActions.BlockIP(packet_info['source_ip'])
-                        blocked_ips.add(packet_info['scurce_ip']) 
                      time.sleep(1)
                         
             else:
                pass
          
-         storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+         if rule_info['action'] == "alert":
+            storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+            break
          
-         if rule_info['action']=="drop":
-            doActions.BlockIP(packet_info['source_ip'])
-         
-         elif rule_info['action']=="block":
-            blocked_ips.add(packet_info['source_ip'])
-            doActions.BlockIP(packet_info['source_ip'])
+         if rule_info['action'] == "drop":
             
-      
+            result=doActions.BlockIP(packet_info['source_ip'])
+            if result==1:
+               storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+               
       else:
          break    

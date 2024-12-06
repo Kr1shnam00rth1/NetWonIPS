@@ -28,7 +28,7 @@ def CheckTimeDifference(start_time, current_time):
 def MonitorSSHLogs():
     """Function to monitor the SSH logs to detect failed login attempts and block IPs exceeding the threshold count within the threshold time."""
     
-    file = open("/var/log/auth.log")
+    file = open("/var/log/auth.log",mode="r")
 
     file.seek(0, 2)
     failed_login_pattern = re.compile(r'Failed password for .+ from (\d+\.\d+\.\d+\.\d+)') 

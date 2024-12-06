@@ -27,7 +27,7 @@ def CheckTimeDifference(start_time, current_time):
 def MonitorFTPLogs():
     """Function to monitor the FTP logs to detect failed login attempts and block IPs exceeding the threshold count within the threshold time."""
     
-    file = open("/var/log/vsftpd.log")
+    file = open("/var/log/vsftpd.log",mode="r")
     file.seek(0, 2)
     failed_login_pattern = re.compile(r'FAIL LOGIN: Client "(\d+\.\d+\.\d+\.\d+)"')
     timestamp_regex = r"(\d{2}:\d{2}:\d{2})"  

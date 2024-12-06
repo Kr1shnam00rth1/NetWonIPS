@@ -32,4 +32,4 @@
 ```
 ### References
 
-+ [Snort Guide](https://docs.snort.org/rules/options/general/)
++ [Snort Guide](https://docs.snort.org/welcome)

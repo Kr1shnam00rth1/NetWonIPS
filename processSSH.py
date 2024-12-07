@@ -63,7 +63,7 @@ def MonitorSSHLogs():
                                 result = CheckTimeDifference(start_time, current_time)
                             
                                 if result == 1:
-                                    #doActions.BlockIP(ip)
+                                    doActions.BlockIP(ip)
                                     storeLogs.AttackLogs(f'SSH Bruteforce IP {ip} Blocked', None)
                                     ip_failed_count.pop(ip)
                                     

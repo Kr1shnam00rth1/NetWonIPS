@@ -10,4 +10,4 @@ EventId,Timestamp,Message,Sid
 8,2024-12-05 17:54:57,XSS Attack Detected,10011
 9,2024-12-05 18:32:42,SSH Bruteforce IP 127.0.0.1 Blocked,NULL
 10,2024-12-05 18:51:22,FTP Bruteforce IP 127.0.0.1 Blocked,NULL
-11,2024-12-04 18:59:22,Potenital UDP flood Attack,10012
+11,2024-12-04 18:59:22,Potenital UDP Flood Attack,10012

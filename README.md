@@ -2,8 +2,8 @@
 
 ### Description
 
-+ Developed a Network Intrusion Prevention System (NIPS) using Python, utilizing Scapy for real-time packet inspection, implementing Snort rules for threat detection, and configuring IPTables for dynamic packet filtering.  
-+ Designed and implemented modules to detect SSH and FTP brute-force login attempts, using rate-limiting techniques and detailed logging for attack and traffic data, enabling continuous monitoring and automated reporting.
++ Developed a Network Intrusion Prevention System (NIPS) using Python, used Scapy for real-time packet inspection, implemented custom Snort rules for threat detection, and and leveraged IPTables for dynamic packet filtering.
++ Designed and implemented modules to detect SSH and FTP brute-force login attempts using rate-limiting techniques and detailed logging of attack and traffic data, enabling continuous monitoring and automated reporting.
 
 ### Project Structure
 

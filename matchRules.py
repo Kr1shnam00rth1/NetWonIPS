@@ -88,19 +88,19 @@ def ExtractRuleInfo(rule):
    if match:
       rule_info['sid']=match.group(0)
    
+   pattern = r'flow:\s*(\S+);'
+   match = re.search(pattern,rule)
+   if match:
+      rule_info['flow'] = match.group(1)
+   
    return rule_info
    
 
 def MatchRules(packet_info):
    
    """ Function to perform a match of packet info with rule info if rule matched the corresponding action could be taken """
-   
-   blocked_ips=set()
+
    count_ips={}
-   if packet_info['source_ip'] in blocked_ips:
-      doActions.BlockIP(packet_info['source_ip'])
-      return
-   
    file=open("snortRules.txt",mode="r")
    while True:
       rule=file.readline()   
@@ -143,7 +143,7 @@ def MatchRules(packet_info):
          if rule_info['itype']!=None:
             if rule_info['itype']!=packet_info['itype']:
                continue
-
+      
          if rule_info['count']!=None:
             
             current_time=int(time.time())
@@ -163,8 +163,17 @@ def MatchRules(packet_info):
                      storeLogs(rule_info['msg'],rule_info['sid'])
                      
                      if rule_info['action'] == "drop":
-                        doActions.BlockIP(packet_info['source_ip'])
-                     time.sleep(1)
+            
+                        if rule_info['flow'] == "to_server":
+                           result = doActions.IncommingIpBlock(packet_info['source_ip'])
+                           if result==1:
+                              storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+                              continue
+                        elif rule_info['flow'] == "to_client":
+                           result = doActions.OutgoingIpBlock(packet_info['destination_ip'])
+                           if result == 1:
+                              storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+                              time.sleep(1)
                
             if rule_info['track'] == "by_src":
                
@@ -179,22 +188,44 @@ def MatchRules(packet_info):
                      count_ips.pop(packet_info['source_ip'])
                      storeLogs(rule_info['msg'],rule_info['sid'])
                      
-                     if rule_info['action']=="drop":
-                        doActions.BlockIP(packet_info['source_ip'])
+                     if rule_info['action'] == "drop":
+            
+                        if rule_info['flow'] == "to_server":
+                           result = doActions.IncommingIpBlock(packet_info['source_ip'])
+                           if result==1:
+                              storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+                              continue
+                        elif rule_info['flow'] == "to_client":
+                           result = doActions.OutgoingIpBlock(packet_info['destination_ip'])
+                           if result == 1:
+                              storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+                              continue
+
                      time.sleep(1)
                         
             else:
                pass
          
          if rule_info['action'] == "alert":
+
             storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
-            break
+            print("Aleret Generated Check Logs")
+            continue
          
          if rule_info['action'] == "drop":
             
-            result=doActions.BlockIP(packet_info['source_ip'])
-            if result==1:
-               storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+            if rule_info['flow'] == "to_server":
+               
+               result = doActions.IncommingIpBlock(packet_info['source_ip'])
+               if result==1:
+                  storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+                  continue
+            elif rule_info['flow'] == "to_client":
+               print("Fuck")
+               result = doActions.OutgoingIpBlock(packet_info['destination_ip'])
+               if result == 1:
+                  storeLogs.AttackLogs(rule_info['msg'],rule_info['sid'])
+                  
                
       else:
          break    

@@ -101,7 +101,8 @@ def MatchRules(packet_info):
    """ Function to perform a match of packet info with rule info if rule matched the corresponding action could be taken """
 
    count_ips = {}
-   file = open("snortRules.txt",mode="r")
+   file = open("customRules.txt",mode="r")
+   print(file)
    while True:
       rule = file.readline()   
       if rule:

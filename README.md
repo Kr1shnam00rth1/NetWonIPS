@@ -27,6 +27,4 @@
   cd NetWonIPS
   sudo python3 main.py
 ```
-### References
 
-+ [Snort Guide](https://docs.snort.org/rules/options/general/)

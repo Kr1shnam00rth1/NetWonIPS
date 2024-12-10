@@ -2,8 +2,8 @@
 
 ### Description
 
-+ Developed a Network Intrusion Prevention System (NIPS) using Python, used Scapy for real-time packet inspection, implemented custom Snort rules for threat detection, and leveraged IPTables for dynamic packet filtering.  
-+ Implemented comprehensive logging mechanisms to capture attack and traffic data, improving the visibility and analysis of network security events.
++ Developed a Network Intrusion Prevention System (NIPS) in Python, using Scapy for real-time packet analysis and custom Snort rules for threat detection, alongside IPTables for dynamic packet filtering to secure network traffic.
++ Implemented comprehensive logging mechanisms to capture attack details and network traffic data, enhancing visibility and enabling in-depth analysis of security events.
   
 ### Project Structure
 

@@ -5,7 +5,7 @@ import subprocess
 
 def IsIncommingBlocked(ip):
     
-    """ Function to check does IP already blocked or not"""
+    """ Function to check does IP already blocked or not in INPUT Tables"""
     
     try:
         
@@ -19,7 +19,7 @@ def IsIncommingBlocked(ip):
 
 def IsOutgoingBlocked(ip):
     
-    """ Function to check does IP already blocked or not"""
+    """ Function to check does IP already blocked or not in the OUTPUT Table"""
     
     try:
         
@@ -33,7 +33,7 @@ def IsOutgoingBlocked(ip):
 
 def IncommingIpBlock(ip):
 
-    """ Function to bloack ip"""
+    """ Function to Block Incomming Traffic """
     
     if IsIncommingBlocked(ip):
         return 0
@@ -49,7 +49,7 @@ def IncommingIpBlock(ip):
 
 def OutgoingIpBlock(ip):
 
-    """ Function to bloack ip"""
+    """ Function to Block Outgoing Traffic"""
     
     if IsOutgoingBlocked(ip):
         return 0

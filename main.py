@@ -3,6 +3,7 @@ import os
 import processPackets
 
 def display_banner():
+
     banner = r"""
   ███╗   ██╗███████╗████████╗██╗    ██╗ ██████╗ ███╗   ██╗
   ████╗  ██║██╔════╝╚══██╔══╝██║    ██║██╔═══██╗████╗  ██║
@@ -18,18 +19,20 @@ def display_banner():
   │   Purpose       :  Detects and mitigates network      │
   │                    intrusions in real-time.           │
   │                                                       │
-  │   Features      : - Snort rule-based detection.       │
-  │                   - SSH & FTP brute force detection.  │
-  │                   - Alerts, blocking, and logging.    │
-  │                   - Flexible custom rule support.     │
-  │                                                       │
+  │   Features      : - Rule-based detection.             │
+  │                   - Dynamic Filtering                 │
+  │                   - Enhanced logging mechanism        │
   │   Note          :  Designed for learning and          │
   │                    experimentation in cybersecurity.  │
   └───────────────────────────────────────────────────────┘
 """
     print(banner)
+    time.sleep(3)
+    os.system("clear")
     print("NetWon IPS rule engine started monitoring !!!")
 
 if __name__ == "__main__":
+
+  display_banner()
   
   processPackets.StartSniffing()

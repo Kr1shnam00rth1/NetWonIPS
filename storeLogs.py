@@ -35,11 +35,11 @@ def TrafficLogs(packet_info):
     event_id=0
 
     file = open('trafficLogs.csv', mode='a+', newline='')
-    protocol=packet_info['protocol']
-    source_ip=packet_info['source_ip']
-    destination_ip=packet_info['destination_ip']
-    source_port=packet_info['source_port']
-    destination_port=packet_info['destination_port']
+    protocol = packet_info['protocol']
+    source_ip = packet_info['source_ip']
+    destination_ip = packet_info['destination_ip']
+    source_port = packet_info['source_port']
+    destination_port = packet_info['destination_port']
 
     try:
         file.seek(0)
